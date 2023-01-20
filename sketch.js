@@ -96,8 +96,45 @@ function draw() {
     noStroke();
 
 
+    // BOX WAVE
+    for (let x = -500; x < 500; x += 100) {
+      for (let y = -500; y < 500; y += 100) {
+        push();
+        translate(x, y);
+        texture(liqtxtr);
+        texture(textures[counter % (textures.length - 1)]); // cycle through textures
+        texture(randomTextureBoxes);
+        box(50, 50, 200+ noise(x, y) * 500 * sin(frameCount/100 + x + y));
+        pop();
+      }
+    }
 
+      // draw columns
+      column(750, -750);
+      column(-750, -750);
+      column(750, 750);
 
+      // draw walls
+
+      let br = 750;
+      let ht = 500;
+
+      push();
+        specularMaterial(255, 200, 200);
+        texture(gridtxtr);
+        translate(br, 0, ht/2);
+        rotateX(PI/2);
+        rotateY(PI/2);
+        rect(0, 0, 1500, ht);
+      pop();
+
+      push();
+        specularMaterial(255, 200, 200);
+        texture(gridtxtr);
+        translate(0, -br, ht/2);
+        rotateX(PI/2);
+        rect(0, 0, 1500, ht);
+      pop();
 
       // draw floor
       push();
@@ -118,38 +155,52 @@ function draw() {
       }
       pop();
 
-      branch(500, PI);
-}
 
-function branch(len, ang) {
-  if (len < 100.0) {return;}
-  normalMaterial();
-  //noStroke();
+      // draw tower
+      push();
+        translate(0, 0, 100);
+        specularMaterial(0, 200, 255);
+        fill(0, 255, 255, 200);
+        tower();
+      pop();
 
-  // let newLen = len * map(mouseY, 0, width, 0.04, 0.8);
-  let newLen = len * 0.9;
+      // draw class objects (except clouds)
+      for (let i = 0; i < henges.length; i++) {
+        henges[i].show();
+      }
 
-    strokeWeight(len * 0.1);
-    //stroke(255);
+      for (let i = 0; i < floaties.length; i++) {
+        floaties[i].show();
+      }
 
-    push();
-    rotate(ang);
-    translate(0, 0, len/2);
-    //line(0, 0, 0, newLen);
-    rotateX(PI/2);
-    cylinder(50, len);
-    pop();
+      for (let i = 0; i < spires.length; i++) {
+        spires[i].show();
+      }
 
-    push();
-    translate(0, 0, newLen);
+      for (let i = 0; i < emanations.length; i++) {
+        emanations[i].show();
+      }
 
-    //let newAng = map(noise(frameCount/20) * width, 0, height, 0.01, PI);
-    let newAng = PI/2 * 0.8;
-    
-    branch(newLen, newAng);
-    // branch(newLen, -newAng);
-    pop();
-  pop();  
+
+      // draw water
+      push();
+        translate(0, 0, 100);
+        rotateY(sin(frameCount/100) / 20);
+        fill(50, 200, 255, 100);
+        texture(watertxtr);
+        tint(255, 200);
+        rect(0, 0, 5000, 5000);
+
+        push();
+      
+        rectMode(CORNER);
+
+      pop();
+
+      // draw cloud class objects over water
+      for (let i = 0; i < clouds.length; i++) {
+        clouds[i].show();
+      }
 }
 
 function column(x, y) {
